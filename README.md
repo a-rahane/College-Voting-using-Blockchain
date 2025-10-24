@@ -1,1 +1,1 @@
-# College-Voting-using-Blockchain
+# College Voting using Blockchain
