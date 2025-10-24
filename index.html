@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>College Voting DApp</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- web3 -->
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+</head>
+<body>
+  <nav>
+      <h1>College Voting</h1>
+      <div>
+        <button id="connectBtn">Connect Wallet</button>
+        <p id="account" style="display:inline-block;margin-left:12px">Not connected</p>
+      </div>
+  </nav>
+
+  <main>
+      <section id="adminPanel" class="card hidden">
+          <h2>Admin Dashboard</h2>
+          <div class="group">
+              <input id="voterAddr" placeholder="Voter wallet address (0x...)">
+              <button id="addVoterBtn">Add Voter</button>
+          </div>
+          <div class="group">
+              <input id="candidateName" placeholder="Candidate name">
+              <button id="addCandidateBtn">Add Candidate</button>
+          </div>
+          <div class="group">
+              <button id="startBtn">Start Election</button>
+              <button id="endBtn">End Election</button>
+              <button id="publishResults">Publish Results 📢</button>
+          </div>
+      </section>
+
+      <section id="voterPanel" class="card hidden">
+          <h2>Voter Panel</h2>
+          <button id="checkReg">Check Registration</button>
+          <div id="votingArea" class="hidden">
+              <h3>Candidates</h3>
+              <div id="candidatesList" class="grid"></div>
+          </div>
+      </section>
+
+      <section class="card">
+          <h2>Results</h2>
+          <div id="resultsList">
+              <p>Results not published yet ⏳</p>
+          </div>
+      </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
