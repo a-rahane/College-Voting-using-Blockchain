@@ -199,7 +199,6 @@ let web3;
 let contract;
 let account;
 
-// DOM
 const connectBtn = document.getElementById("connectBtn");
 const accountP = document.getElementById("account");
 
@@ -247,14 +246,14 @@ async function connectWallet(){
     setStatus(`Account: ${account}`);
     contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
 
-    // show admin or voter panel
+    //show admin or voter panel
     const admin = await contract.methods.admin().call();
     showAdmin(account.toLowerCase() === admin.toLowerCase());
 
-    // load results if already published
+    //load results if already published
     await loadResults();
 
-    // listen for account changes
+    //listen for account changes
     ethereum.on && ethereum.on("accountsChanged", (accs) => {
       if(accs.length === 0){
         setStatus("Not connected");
@@ -264,7 +263,7 @@ async function connectWallet(){
       } else {
         account = accs[0];
         setStatus(`Account: ${account}`);
-        // re-evaluate admin status
+        //re-evaluate admin status
         contract.methods.admin().call().then(adminAddr => {
           showAdmin(account.toLowerCase() === adminAddr.toLowerCase());
         }).catch(()=>{/*ignore*/});
@@ -279,13 +278,13 @@ async function connectWallet(){
 
 connectBtn.onclick = connectWallet;
 
-/* ---------------- Admin handlers ---------------- */
+// ADMIN
 addVoterBtn.onclick = async () => {
   try {
     const addr = voterAddr.value.trim();
     if(!web3.utils.isAddress(addr)) return alert("Enter a valid wallet address");
     await contract.methods.addVoter(addr).send({ from: account });
-    alert("Voter added ✅");
+    alert("Voter added");
     voterAddr.value = "";
   } catch (err) {
     console.error(err);
@@ -298,7 +297,7 @@ addCandidateBtn.onclick = async () => {
     const name = candidateName.value.trim();
     if(!name) return alert("Enter candidate name");
     await contract.methods.addCandidate(name).send({ from: account });
-    alert("Candidate added ✅");
+    alert("Candidate added");
     candidateName.value = "";
   } catch (err) {
     console.error(err);
@@ -309,7 +308,7 @@ addCandidateBtn.onclick = async () => {
 startBtn.onclick = async () => {
   try {
     await contract.methods.startElection().send({ from: account });
-    alert("Election started ✅");
+    alert("Election started");
   } catch (err) {
     console.error(err);
     alert("Start failed: " + (err.message || err));
@@ -319,7 +318,7 @@ startBtn.onclick = async () => {
 endBtn.onclick = async () => {
   try {
     await contract.methods.endElection().send({ from: account });
-    alert("Election ended ✅");
+    alert("Election ended");
   } catch (err) {
     console.error(err);
     alert("End failed: " + (err.message || err));
@@ -329,7 +328,7 @@ endBtn.onclick = async () => {
 publishResultsBtn.onclick = async () => {
   try {
     await contract.methods.publishResults().send({ from: account });
-    alert("Results Published 📢");
+    alert("Results Published");
     await loadResults();
   } catch (err) {
     console.error(err);
@@ -337,17 +336,17 @@ publishResultsBtn.onclick = async () => {
   }
 };
 
-/* ---------------- Voter handlers ---------------- */
+//Voter 
 checkRegBtn.onclick = async () => {
   try {
     if(!account) return alert("Connect your wallet first");
     const registered = await contract.methods.isVoter(account).call();
     if(registered){
-      alert("You are registered ✅");
+      alert("You are registered");
       votingArea.classList.remove("hidden");
       await loadCandidates();
     } else {
-      alert("You are NOT registered ❌");
+      alert("You are NOT registered");
       votingArea.classList.add("hidden");
     }
   } catch (err) {
@@ -391,7 +390,7 @@ async function loadCandidates(){
       candidatesList.appendChild(div);
     }
 
-    // add click listeners to vote buttons
+    //add click listeners to vote buttons
     const voteButtons = document.querySelectorAll(".voteBtn");
     voteButtons.forEach(b => {
       b.onclick = async (e) => {
@@ -410,8 +409,8 @@ window.vote = async (i) => {
   try {
     if(!account) return alert("Connect wallet first");
     await contract.methods.vote(i).send({ from: account });
-    alert("Vote cast ✅");
-    // reload candidates + results
+    alert("Vote casted");
+    //reload candidates + results
     await loadCandidates();
     await loadResults();
   } catch (err) {
@@ -426,7 +425,7 @@ async function loadResults(){
     const published = await contract.methods.resultsPublished().call();
     resultsList.innerHTML = "";
     if(!published){
-      resultsList.innerHTML = "<p>Results not published yet ⏳</p>";
+      resultsList.innerHTML = "<p>Results not published yet</p>";
       return;
     }
     const count = parseInt(await contract.methods.getCandidateCount().call(), 10);
